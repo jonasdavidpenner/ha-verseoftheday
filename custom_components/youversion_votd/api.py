@@ -6,7 +6,7 @@ import logging
 
 from aiohttp import ClientError, ClientSession
 
-from .const import API_BASE, APP_KEY_HEADER
+from .const import API_BASE, APP_KEY, APP_KEY_HEADER
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,10 +22,15 @@ class YouVersionAuthError(YouVersionError):
 class YouVersionClient:
     """Kapselt die HTTP-Aufrufe gegen die YouVersion Platform API."""
 
-    def __init__(self, session: ClientSession, app_key: str, bible_id: int) -> None:
+    def __init__(
+        self,
+        session: ClientSession,
+        bible_id: int,
+        app_key: str = APP_KEY,
+    ) -> None:
         self._session = session
-        self._app_key = app_key
         self._bible_id = bible_id
+        self._app_key = app_key
 
     @property
     def _headers(self) -> dict[str, str]:
@@ -49,7 +54,7 @@ class YouVersionClient:
             raise YouVersionError(f"Verbindungsfehler: {err}") from err
 
     async def async_list_bibles(self, language: str) -> list[dict]:
-        """Listet die für diesen App Key lizenzierten Bibeln einer Sprache auf."""
+        """Listet die für den App Key lizenzierten Bibeln einer Sprache auf."""
         data = await self._get(
             "/bibles",
             params={"language_ranges[]": language, "page_size": 99},
@@ -57,7 +62,9 @@ class YouVersionClient:
         return [
             {
                 "id": item["id"],
-                "title": item.get("localized_title") or item.get("title") or str(item["id"]),
+                "title": item.get("localized_title")
+                or item.get("title")
+                or str(item["id"]),
             }
             for item in data.get("data", [])
         ]
@@ -79,8 +86,3 @@ class YouVersionClient:
             "reference": passage.get("reference"),
             "content": passage.get("content"),
         }
-
-    async def async_validate(self) -> None:
-        """Prüft App Key und Zugriff auf die gewählte Übersetzung."""
-        # JHN.3.16 existiert in jeder Bibel und ist damit ein sicherer Testabruf.
-        await self.async_get_passage("JHN.3.16")

@@ -3,9 +3,8 @@
     "step": {
       "user": {
         "title": "YouVersion – Verse of the Day",
-        "description": "Enter your App Key from platform.youversion.com and choose the language of the Bible translation.",
+        "description": "Choose the language of the Bible translation.",
         "data": {
-          "app_key": "App Key",
           "language": "Language (BCP-47, e.g. de, en)"
         }
       },
@@ -14,23 +13,15 @@
         "data": {
           "bible_id": "Translation"
         }
-      },
-      "reauth_confirm": {
-        "title": "Renew App Key",
-        "description": "Your App Key was rejected. Enter a new one.",
-        "data": {
-          "app_key": "App Key"
-        }
       }
     },
     "error": {
-      "invalid_auth": "App Key is invalid or was rejected.",
+      "invalid_auth": "The built-in App Key is invalid or was rejected.",
       "cannot_connect": "Failed to connect to the YouVersion API.",
-      "no_bibles": "No licensed Bibles available for this language. Accept a license in the portal first."
+      "no_bibles": "No licensed Bibles available for this language."
     },
     "abort": {
-      "already_configured": "This translation is already configured.",
-      "reauth_successful": "App Key updated successfully."
+      "already_configured": "This translation is already configured."
     }
   },
   "entity": {

@@ -3,9 +3,8 @@
     "step": {
       "user": {
         "title": "YouVersion – Bibelvers des Tages",
-        "description": "Gib deinen App Key von platform.youversion.com ein und wähle die Sprache der Bibelübersetzung.",
+        "description": "Wähle die Sprache der Bibelübersetzung.",
         "data": {
-          "app_key": "App Key",
           "language": "Sprache (BCP-47, z. B. de, en)"
         }
       },
@@ -14,23 +13,15 @@
         "data": {
           "bible_id": "Übersetzung"
         }
-      },
-      "reauth_confirm": {
-        "title": "App Key erneuern",
-        "description": "Dein App Key wurde abgelehnt. Gib einen neuen ein.",
-        "data": {
-          "app_key": "App Key"
-        }
       }
     },
     "error": {
-      "invalid_auth": "App Key ungültig oder abgelehnt.",
+      "invalid_auth": "Der fest hinterlegte App Key ist ungültig oder wurde abgelehnt.",
       "cannot_connect": "Verbindung zur YouVersion-API fehlgeschlagen.",
-      "no_bibles": "Für diese Sprache sind keine lizenzierten Bibeln verfügbar. Akzeptiere im Portal zunächst eine Lizenz."
+      "no_bibles": "Für diese Sprache sind keine lizenzierten Bibeln verfügbar."
     },
     "abort": {
-      "already_configured": "Diese Übersetzung ist bereits eingerichtet.",
-      "reauth_successful": "App Key erfolgreich aktualisiert."
+      "already_configured": "Diese Übersetzung ist bereits eingerichtet."
     }
   },
   "entity": {
