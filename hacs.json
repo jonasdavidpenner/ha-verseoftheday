@@ -1,5 +1,5 @@
 {
-  "name": "Bibelvers des Tages (YouVersion)",
+  "name": "Verse of the Day (YouVersion)",
   "render_readme": true,
   "homeassistant": "2024.12.0"
 }

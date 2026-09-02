@@ -3,7 +3,7 @@
  *
  * Verwendung:
  *   type: custom:votd-card
- *   entity: sensor.bibelvers_des_tages_verse_of_the_day
+ *   entity: sensor.verse_of_the_day
  *   title: Bibelvers des Tages   # optional
  *
  * Die Karte liest den Verstext aus dem Attribut `text` und die Referenz aus
@@ -104,7 +104,7 @@ class VotdCard extends HTMLElement {
 
     if (!stateObj) {
       this._els.container.innerHTML =
-        `<div class="votd-warn">Entität <b>${entityId}</b> nicht gefunden.</div>`;
+        `<div class="votd-warn">Entity <b>${entityId}</b> not found.</div>`;
       return;
     }
 
@@ -113,7 +113,7 @@ class VotdCard extends HTMLElement {
     const title =
       this._config.title !== undefined
         ? this._config.title
-        : "Bibelvers des Tages";
+        : "Verse of the Day";
 
     // Nur bei Änderung neu schreiben (spart unnötige DOM-Updates).
     if (this._lastText === text && this._lastRef === reference && this._lastTitle === title) {
@@ -133,7 +133,7 @@ class VotdCard extends HTMLElement {
   }
 
   static getStubConfig() {
-    return { entity: "sensor.bibelvers_des_tages_verse_of_the_day" };
+    return { entity: "sensor.verse_of_the_day" };
   }
 }
 
@@ -143,8 +143,8 @@ customElements.define("votd-card", VotdCard);
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "votd-card",
-  name: "Bibelvers des Tages",
-  description: "Zeigt den täglichen Bibelvers schön formatiert an.",
+  name: "Verse of the Day",
+  description: "Shows the daily Bible verse, nicely formatted.",
   preview: true,
 });
 

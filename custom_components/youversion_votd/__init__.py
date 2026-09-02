@@ -12,7 +12,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import YouVersionClient
-from .const import CARD_FILENAME, CONF_BIBLE_ID, DOMAIN, URL_BASE
+from .const import CARD_FILENAME, CONF_APP_KEY, CONF_BIBLE_ID, DOMAIN, URL_BASE
 from .coordinator import YouVersionCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -30,7 +30,11 @@ async def async_setup_entry(
     await _async_register_frontend(hass)
 
     session = async_get_clientsession(hass)
-    client = YouVersionClient(session, entry.data[CONF_BIBLE_ID])
+    client = YouVersionClient(
+        session,
+        entry.data[CONF_APP_KEY],
+        entry.data[CONF_BIBLE_ID],
+    )
 
     coordinator = YouVersionCoordinator(hass, entry, client)
     await coordinator.async_config_entry_first_refresh()

@@ -6,7 +6,7 @@ import logging
 
 from aiohttp import ClientError, ClientSession
 
-from .const import API_BASE, APP_KEY, APP_KEY_HEADER
+from .const import API_BASE, APP_KEY_HEADER
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,12 +25,12 @@ class YouVersionClient:
     def __init__(
         self,
         session: ClientSession,
+        app_key: str,
         bible_id: int,
-        app_key: str = APP_KEY,
     ) -> None:
         self._session = session
-        self._bible_id = bible_id
         self._app_key = app_key
+        self._bible_id = bible_id
 
     @property
     def _headers(self) -> dict[str, str]:
@@ -54,7 +54,7 @@ class YouVersionClient:
             raise YouVersionError(f"Verbindungsfehler: {err}") from err
 
     async def async_list_bibles(self, language: str) -> list[dict]:
-        """Listet die für den App Key lizenzierten Bibeln einer Sprache auf."""
+        """Listet die für diesen App Key lizenzierten Bibeln einer Sprache auf."""
         data = await self._get(
             "/bibles",
             params={"language_ranges[]": language, "page_size": 99},
@@ -86,3 +86,8 @@ class YouVersionClient:
             "reference": passage.get("reference"),
             "content": passage.get("content"),
         }
+
+    async def async_validate(self) -> None:
+        """Prüft App Key und Zugriff auf die gewählte Übersetzung."""
+        # JHN.3.16 existiert in jeder Bibel und ist damit ein sicherer Testabruf.
+        await self.async_get_passage("JHN.3.16")

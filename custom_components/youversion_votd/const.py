@@ -6,16 +6,8 @@ from datetime import timedelta
 
 DOMAIN = "youversion_votd"
 
-# ---------------------------------------------------------------------------
-# App Key fest verdrahtet.
-# Trag hier deinen App Key von platform.youversion.com ein.
-# Hinweis: In einem oeffentlichen Repo ist dieser Key fuer alle sichtbar.
-# Fuer den nicht-kommerziellen Gebrauch ist das laut YouVersion in Ordnung;
-# beachte aber, dass der Key bei Missbrauch rate-limitiert werden koennte.
-# ---------------------------------------------------------------------------
-APP_KEY = "HIER_DEINEN_APP_KEY_EINTRAGEN"
-
 # Konfigurationsschlüssel (im Config Entry gespeichert)
+CONF_APP_KEY = "app_key"
 CONF_BIBLE_ID = "bible_id"
 CONF_BIBLE_NAME = "bible_name"
 CONF_LANGUAGE = "language"

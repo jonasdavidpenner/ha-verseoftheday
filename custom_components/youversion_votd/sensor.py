@@ -1,4 +1,4 @@
-"""Sensor-Plattform für den Bibelvers des Tages."""
+"""Sensor-Plattform für den Verse of the Day."""
 
 from __future__ import annotations
 
@@ -26,14 +26,17 @@ async def async_setup_entry(
 class YouVersionVotdSensor(CoordinatorEntity[YouVersionCoordinator], SensorEntity):
     """Sensor, dessen Zustand die Vers-Referenz ist; der Text steht in den Attributen.
 
-    Hintergrund: Ein Sensor-State in Home Assistant ist auf 255 Zeichen begrenzt.
-    Da Verse (v. a. Passagen mit mehreren Versen) länger sein können, ist der
-    Zustand die Referenz (z. B. 'Johannes 3:16'), der volle Text liegt im
-    Attribut 'text' und lässt sich per Vorlage oder Attribut-Karte anzeigen.
+    Der Sensor ist die Hauptfunktion des Geräts, daher `_attr_name = None`:
+    Anzeigename und Entity-ID entsprechen dem Gerätenamen ("Verse of the Day"),
+    ohne doppelten Namensteil.
+
+    Hintergrund zum Zustand: Ein Sensor-State ist auf 255 Zeichen begrenzt. Da
+    Verse laenger sein koennen, ist der Zustand die Referenz (z. B. "John 3:16"),
+    der volle Text liegt im Attribut `text`.
     """
 
     _attr_has_entity_name = True
-    _attr_translation_key = "verse_of_the_day"
+    _attr_name = None
     _attr_icon = "mdi:book-cross"
 
     def __init__(
@@ -43,7 +46,7 @@ class YouVersionVotdSensor(CoordinatorEntity[YouVersionCoordinator], SensorEntit
         self._attr_unique_id = f"{entry.entry_id}_votd"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
-            name="Bibelvers des Tages",
+            name="Verse of the Day",
             manufacturer="YouVersion",
             model=entry.data.get(CONF_BIBLE_NAME, "Bible"),
             entry_type=DeviceEntryType.SERVICE,

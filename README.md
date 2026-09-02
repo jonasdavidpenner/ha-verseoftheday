@@ -1,87 +1,85 @@
-# Bibelvers des Tages (YouVersion) – Home Assistant Integration
+# Verse of the Day (YouVersion) – Home Assistant Integration
 
-Zeigt den täglichen Bibelvers der [YouVersion Platform API](https://developers.youversion.com/)
-als Sensor **und** als eigene, hübsch formatierte Lovelace-Karte an – in der
-Bibelübersetzung deiner Wahl.
+<p align="left"><img src="icons/icon.png" width="120" alt="Verse of the Day icon"></p>
 
-## Funktionen
+Shows the daily Bible verse from the [YouVersion Platform API](https://developers.youversion.com/)
+as a sensor **and** as a dedicated, nicely formatted Lovelace card – in the
+Bible translation of your choice.
 
-- Sensor mit
-  - **Zustand:** die Referenz (z. B. `Matthäus 6:34`)
-  - **Attributen:** `text` (voller Verstext), `reference`, `passage_id`
-- **Eigene Karte** `custom:votd-card` – wird von der Integration automatisch
-  bereitgestellt und registriert (keine manuelle Ressource nötig)
-- Einrichtung über die Oberfläche: nur Sprache und Übersetzung wählen
-- App Key ist fest im Code hinterlegt – Nutzer brauchen keinen eigenen Key
+## Features
 
-## Vor der Installation: App Key eintragen
+- A sensor with
+  - **State:** the reference (e.g. `John 3:16`)
+  - **Attributes:** `text` (full verse text), `reference`, `passage_id`
+- A **custom card** `custom:votd-card` – bundled and auto-registered by the
+  integration (no manual resource needed)
+- Full UI setup (config flow), available in English and German
+- Automatic reauth prompt if the App Key expires
 
-Diese Integration hat den YouVersion App Key **fest verdrahtet**. Trag deinen
-Key in `custom_components/youversion_votd/const.py` ein:
+## Requirements
 
-```python
-APP_KEY = "HIER_DEINEN_APP_KEY_EINTRAGEN"
-```
+Each user provides their **own App Key**:
 
-Den Key bekommst du auf [platform.youversion.com](https://platform.youversion.com)
-(App anlegen). Akzeptiere dort außerdem die **Lizenz** der Übersetzung(en), die
-du anbieten willst – nur lizenzierte Bibeln erscheinen in der Auswahl.
+1. Register at [platform.youversion.com](https://platform.youversion.com) and
+   create an app to obtain an App Key.
+2. Accept the **license** for the translation(s) you want in the portal – only
+   licensed Bibles show up in the selection.
 
-> Hinweis: In einem öffentlichen Repository ist der Key für alle sichtbar. Für
-> den nicht-kommerziellen Gebrauch ist das laut YouVersion zulässig; bei
-> Missbrauch kann der Key jedoch rate-limitiert werden.
+## Installation via HACS
 
-## Installation über HACS
+1. HACS → three-dot menu → **Custom repositories**.
+2. Add this repository's URL, category **Integration**.
+3. Search for “Verse of the Day” and download it.
+4. Restart Home Assistant.
+5. **Settings → Devices & services → Add integration** → “Verse of the Day”.
+6. Enter your App Key, pick a language and a translation.
 
-1. HACS → Drei-Punkte-Menü → **Benutzerdefinierte Repositories**.
-2. URL dieses Repositories eintragen, Kategorie **Integration**, hinzufügen.
-3. „Bibelvers des Tages" suchen und herunterladen.
-4. Home Assistant neu starten.
-5. **Einstellungen → Geräte & Dienste → Integration hinzufügen** → „Bibelvers des Tages".
+After the restart the card is available automatically (it also appears in the
+card picker as “Verse of the Day”).
 
-Nach dem Neustart steht die Karte automatisch zur Verfügung (sie taucht auch im
-Karten-Auswahldialog unter „Bibelvers des Tages" auf).
-
-## Die Karte verwenden
-
-Minimal:
+## Using the card
 
 ```yaml
 type: custom:votd-card
-entity: sensor.bibelvers_des_tages_verse_of_the_day
+entity: sensor.verse_of_the_day
 ```
 
-Mit eigenem Titel:
+With a custom title:
 
 ```yaml
 type: custom:votd-card
-entity: sensor.bibelvers_des_tages_verse_of_the_day
-title: Vers des Tages
+entity: sensor.verse_of_the_day
+title: Daily Verse
 ```
 
-Die Karte zeigt den Verstext in Serifenschrift mit farblichem Akzentbalken und
-die Referenz kursiv darunter. Sie passt sich automatisch an helle und dunkle
-Themes an.
+The card shows the verse text in a serif font with a colored accent bar and the
+reference in italics below. It adapts to light and dark themes.
 
-## Alternative: Markdown-Karte
-
-Falls du lieber ohne die eigene Karte arbeitest:
+## Alternative: Markdown card
 
 ```yaml
 type: markdown
 content: >
-  {{ state_attr('sensor.bibelvers_des_tages_verse_of_the_day', 'text') }}
+  {{ state_attr('sensor.verse_of_the_day', 'text') }}
 
-  *— {{ state_attr('sensor.bibelvers_des_tages_verse_of_the_day', 'reference') }}*
+  *— {{ state_attr('sensor.verse_of_the_day', 'reference') }}*
 ```
 
-## Hinweise
+## Notes
 
-- Der Vers wechselt einmal täglich (nach lokaler Zeit von Home Assistant).
-- Die Integration fragt die API stündlich ab, um Tageswechsel und Neustarts
-  abzudecken.
+- The verse changes once per day (based on Home Assistant's local time).
+- The integration polls the API hourly to cover the day change and restarts.
 
-## Lizenz
+## Icon
 
-MIT – siehe [LICENSE](LICENSE). Bibeltexte unterliegen den jeweiligen Lizenzen
-der Verlage bzw. von YouVersion.
+The integration ships an icon (see `icons/`). Home Assistant only shows
+integration icons that live in the central
+[home-assistant/brands](https://github.com/home-assistant/brands) repository, so
+to make the icon appear in the HA UI and in HACS, submit the prepared files in
+`brands/custom_integrations/youversion_votd/` as a pull request to that repo. See
+`brands/README.md` for the exact steps.
+
+## License
+
+MIT – see [LICENSE](LICENSE). Bible texts are subject to the respective licenses
+of the publishers / YouVersion.

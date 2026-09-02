@@ -1,6 +1,6 @@
 {
   "domain": "youversion_votd",
-  "name": "Bibelvers des Tages (YouVersion)",
+  "name": "Verse of the Day (YouVersion)",
   "codeowners": [
     "@deinusername"
   ],
@@ -10,5 +10,5 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/deinusername/youversion-votd/issues",
   "requirements": [],
-  "version": "1.1.0"
+  "version": "1.3.0"
 }

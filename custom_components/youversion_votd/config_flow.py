@@ -1,12 +1,9 @@
-"""Config Flow für die YouVersion Verse-of-the-Day Integration.
-
-Der App Key ist fest im Code hinterlegt (siehe const.APP_KEY). Der Nutzer
-wählt hier nur die Sprache und anschließend die konkrete Bibelübersetzung.
-"""
+"""Config Flow für die YouVersion Verse-of-the-Day Integration."""
 
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 from typing import Any
 
 import voluptuous as vol
@@ -22,6 +19,7 @@ from homeassistant.helpers.selector import (
 
 from .api import YouVersionAuthError, YouVersionClient, YouVersionError
 from .const import (
+    CONF_APP_KEY,
     CONF_BIBLE_ID,
     CONF_BIBLE_NAME,
     CONF_LANGUAGE,
@@ -33,22 +31,24 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class YouVersionConfigFlow(ConfigFlow, domain=DOMAIN):
-    """Führt den Nutzer durch Sprach- und Übersetzungsauswahl."""
+    """Führt den Nutzer durch App-Key-Eingabe und Übersetzungsauswahl."""
 
     VERSION = 1
 
     def __init__(self) -> None:
+        self._app_key: str | None = None
         self._bibles: list[dict] = []
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
-        """Schritt 1: Sprache wählen."""
+        """Schritt 1: App Key und Sprache."""
         errors: dict[str, str] = {}
         if user_input is not None:
+            self._app_key = user_input[CONF_APP_KEY]
             language = user_input[CONF_LANGUAGE]
             session = async_get_clientsession(self.hass)
-            client = YouVersionClient(session, bible_id=0)
+            client = YouVersionClient(session, self._app_key, 0)
             try:
                 self._bibles = await client.async_list_bibles(language)
             except YouVersionAuthError:
@@ -63,6 +63,7 @@ class YouVersionConfigFlow(ConfigFlow, domain=DOMAIN):
 
         schema = vol.Schema(
             {
+                vol.Required(CONF_APP_KEY): str,
                 vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): str,
             }
         )
@@ -83,8 +84,9 @@ class YouVersionConfigFlow(ConfigFlow, domain=DOMAIN):
             await self.async_set_unique_id(str(bible_id))
             self._abort_if_unique_id_configured()
             return self.async_create_entry(
-                title=f"Bibelvers des Tages ({name})",
+                title=f"Verse of the Day ({name})",
                 data={
+                    CONF_APP_KEY: self._app_key,
                     CONF_BIBLE_ID: bible_id,
                     CONF_BIBLE_NAME: name,
                 },
@@ -104,3 +106,37 @@ class YouVersionConfigFlow(ConfigFlow, domain=DOMAIN):
             }
         )
         return self.async_show_form(step_id="bible", data_schema=schema)
+
+    async def async_step_reauth(
+        self, entry_data: Mapping[str, Any]
+    ) -> ConfigFlowResult:
+        """Startet den Reauth-Flow, wenn der App Key abgelehnt wurde."""
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Fragt einen neuen App Key ab und aktualisiert den Eintrag."""
+        errors: dict[str, str] = {}
+        entry = self._get_reauth_entry()
+        if user_input is not None:
+            session = async_get_clientsession(self.hass)
+            client = YouVersionClient(
+                session, user_input[CONF_APP_KEY], entry.data[CONF_BIBLE_ID]
+            )
+            try:
+                await client.async_validate()
+            except YouVersionAuthError:
+                errors["base"] = "invalid_auth"
+            except YouVersionError:
+                errors["base"] = "cannot_connect"
+            else:
+                return self.async_update_reload_and_abort(
+                    entry, data_updates={CONF_APP_KEY: user_input[CONF_APP_KEY]}
+                )
+
+        return self.async_show_form(
+            step_id="reauth_confirm",
+            data_schema=vol.Schema({vol.Required(CONF_APP_KEY): str}),
+            errors=errors,
+        )
