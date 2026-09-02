@@ -1,0 +1,12 @@
+{
+  "domain": "youversion_votd",
+  "name": "Bibelvers des Tages (YouVersion)",
+  "codeowners": ["@deinusername"],
+  "config_flow": true,
+  "documentation": "https://github.com/deinusername/youversion-votd",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/deinusername/youversion-votd/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}
